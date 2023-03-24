@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/model/todo.dart';
 import 'package:todo_list/widgets/todo_list_item.dart';
 
+import '../repositorio/todo_repository.dart';
+
 class todo_list_page extends StatefulWidget {
   todo_list_page({Key? key}) : super(key: key);
 
@@ -11,6 +13,7 @@ class todo_list_page extends StatefulWidget {
 
 class _todo_list_pageState extends State<todo_list_page> {
   final TextEditingController todoController = TextEditingController();
+  final  TodoRepository  todoRepository =  TodoRepository();
 
   List<Todo> todos = [];
   Todo? todoDelete;
@@ -69,6 +72,7 @@ class _todo_list_pageState extends State<todo_list_page> {
                           },
                         );
                         todoController.clear();
+                        todoRepository.saveTodoList(todos);
                       },
                     ),
                   ],
