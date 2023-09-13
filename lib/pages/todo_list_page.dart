@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/model/todo.dart';
 import 'package:todo_list/widgets/todo_list_item.dart';
-
 import '../repositorio/todo_repository.dart';
 
 class todo_list_page extends StatefulWidget {
@@ -21,7 +20,9 @@ class _todo_list_pageState extends State<todo_list_page> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    todoRepository.getTodo().then((value) {
+      todos = value;
+    });
     super.initState();
   }
 
@@ -29,6 +30,16 @@ class _todo_list_pageState extends State<todo_list_page> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.cyan,
+          elevation: 2,
+          shape:  const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+        bottom: Radius.circular(15),
+      ),
+    ),
+          title: const Text("Todo List"),
+          centerTitle: true,),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -65,9 +76,7 @@ class _todo_list_pageState extends State<todo_list_page> {
                         String title = todoController.text;
                         setState(
                           () {
-                            Todo newTodo =
-                                Todo(title: title, dateTime: DateTime.now());
-
+                            Todo newTodo = Todo(title: title, dateTime: DateTime.now());
                             todos.add(newTodo);
                           },
                         );
@@ -150,6 +159,7 @@ class _todo_list_pageState extends State<todo_list_page> {
     setState(() {
       todos.remove(todo);
     });
+    todoRepository.saveTodoList(todos);
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
@@ -166,7 +176,10 @@ class _todo_list_pageState extends State<todo_list_page> {
         onPressed: () {
           setState(() {
             todos.insert(todoPosDelete!, todoDelete!);
-          });
+
+          }
+          );
+          todoRepository.saveTodoList(todos);
         },
       ),
     ));
@@ -183,10 +196,10 @@ class _todo_list_pageState extends State<todo_list_page> {
 
             Navigator.of(context).pop();
             deletAllTodos();
-          }, child: Text('Sim')),
+          }, child: const Text('Sim')),
           TextButton(onPressed: (){
             Navigator.of(context).pop();
-          }, child: Text('Não')),
+          }, child: const Text('Não')),
         ],
       ),
     );
@@ -196,6 +209,7 @@ class _todo_list_pageState extends State<todo_list_page> {
     setState(() {
       todos.clear();
     });
+    todoRepository.saveTodoList(todos);
 
   }
 }
